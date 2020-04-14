@@ -1,0 +1,22 @@
+jobs:
+- job: release
+  variables:
+    imageName: glaux/clang-azure-devops
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: Docker@1
+      displayName: Build image
+      inputs:
+        command: build
+        containerregistrytype: Container Registry
+        dockerRegistryEndpoint: glaux-registry
+        dockerFile: Dockerfile
+        imageName: $(imageName)
+    - task: Docker@1
+      displayName: Push image
+      inputs:
+        command: push
+        containerregistrytype: Container Registry
+        dockerRegistryEndpoint: glaux-registry
+        imageName: $(imageName)
