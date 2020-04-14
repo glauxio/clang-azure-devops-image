@@ -4,6 +4,7 @@ jobs:
     imageName: glaux/clang-azure-devops
   pool:
     vmImage: 'ubuntu-16.04'
+  condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
   steps:
     - task: Docker@1
       displayName: Build image
@@ -20,3 +21,9 @@ jobs:
         containerregistrytype: Container Registry
         dockerRegistryEndpoint: glaux-registry
         imageName: $(imageName)
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily midnight build
+  branches:
+    include:
+    - master
