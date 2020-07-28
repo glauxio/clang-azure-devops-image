@@ -30,12 +30,17 @@ jobs:
     - task: Docker@2
       displayName: Build image
       inputs:
-        command: buildAndPush
-        dockerFile: Dockerfile
-        containerRegistry: glaux-registry
+        command: build
         repository: $(imageName)
         tags: $(imageTags)
         arguments: --build-arg BASE_IMAGE=$(baseImage) --build-arg DIST=$(dist)
+    - task: Docker@2
+      displayName: Push image
+      inputs:
+        command: push
+        repository: $(imageName)
+        containerRegistry: glaux-registry
+        tags: $(imageTags)
 schedules:
 - cron: "0 4 * * *"
   displayName: Daily midnight build
