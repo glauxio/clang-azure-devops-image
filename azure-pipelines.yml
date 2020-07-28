@@ -21,7 +21,7 @@ jobs:
       focal:
         dist: focal
         baseImage: glaux/ubuntu:focal
-        imageTags:
+        imageTags: |
           focal
           latest
   pool:
@@ -35,7 +35,7 @@ jobs:
         containerRegistry: glaux-registry
         repository: $(imageName)
         tags: $(imageTags)
-        arguments: '--build-arg BASE_IMAGE=$(baseImage) --build-arg DIST=$(dist)'
+        arguments: --build-arg BASE_IMAGE=$(baseImage) --build-arg DIST=$(dist)
 schedules:
 - cron: "0 4 * * *"
   displayName: Daily midnight build
