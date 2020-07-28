@@ -13,6 +13,7 @@ jobs:
         baseImage: ubuntu:xenial
         imageTags: |
           xenial
+          latest
       bionic:
         dist: bionic
         baseImage: glaux/ubuntu:bionic
@@ -23,7 +24,6 @@ jobs:
         baseImage: glaux/ubuntu:focal
         imageTags: |
           focal
-          latest
   pool:
     vmImage: 'ubuntu-20.04'
   steps:
