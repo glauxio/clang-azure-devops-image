@@ -1,29 +1,45 @@
+trigger:
+  branches:
+    include:
+      - master
 jobs:
 - job: release
   variables:
     imageName: glaux/clang-azure-devops
+  strategy:
+    matrix:
+      xenial:
+        dist: xenial
+        baseImage: ubuntu:xenial
+        imageTags: |
+          xenial
+      bionic:
+        dist: bionic
+        baseImage: glaux/ubuntu:bionic
+        imageTags: |
+          bionic
+      focal:
+        dist: focal
+        baseImage: glaux/ubuntu:focal
+        imageTags:
+          focal
+          latest
   pool:
-    vmImage: 'ubuntu-16.04'
-  condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
+    vmImage: 'ubuntu-20.04'
   steps:
-    - task: Docker@1
+    - task: Docker@2
       displayName: Build image
       inputs:
-        command: build
-        containerregistrytype: Container Registry
-        dockerRegistryEndpoint: glaux-registry
+        command: buildAndPush
         dockerFile: Dockerfile
-        imageName: $(imageName)
-    - task: Docker@1
-      displayName: Push image
-      inputs:
-        command: push
-        containerregistrytype: Container Registry
-        dockerRegistryEndpoint: glaux-registry
-        imageName: $(imageName)
+        containerRegistry: glaux-registry
+        repository: $(imageName)
+        tags: $(imageTags)
+        arguments: '--build-arg BASE_IMAGE=$(baseImage) --build-arg DIST=$(dist)'
 schedules:
-- cron: "0 0 * * *"
+- cron: "0 4 * * *"
   displayName: Daily midnight build
   branches:
     include:
     - master
+  always: true
